@@ -1,11 +1,9 @@
 import axios from "axios";
 
-
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ,
+  baseURL: import.meta.env.VITE_API_URL+"/api",
 });
-// console.log(import.meta.env.REACT_APP_API_URL);
-
+console.log(import.meta.env.VITE_API_URL);
 
 // API Service Functions
 export const incidentAPI = {
@@ -35,21 +33,21 @@ export const incidentAPI = {
     try {
       const response = await API.get("/incidents/stats/summary");
       const stats = response.data?.data || {};
-      
+
       // Find high severity (severity >= 3)
       const highSeverity = (stats.bySeverity || [])
-        .filter(s => s && s._id >= 3)
+        .filter((s) => s && s._id >= 3)
         .reduce((sum, s) => sum + (s.count || 0), 0);
-      
+
       // Get top category
       const topCategory = stats.byCategory?.[0]?._id || "-";
-      
+
       return {
         data: {
           total: stats.total || 0,
           highSeverity,
           topCategory,
-        }
+        },
       };
     } catch (error) {
       console.error("Error fetching summary:", error);
@@ -58,7 +56,7 @@ export const incidentAPI = {
           total: 0,
           highSeverity: 0,
           topCategory: "-",
-        }
+        },
       };
     }
   },
@@ -67,13 +65,13 @@ export const incidentAPI = {
     try {
       const response = await API.get("/incidents/stats/summary");
       const stats = response.data?.data || {};
-      
+
       // Transform to format: [{ name: "Category", value: count }]
       return {
-        data: (stats.byCategory || []).map(item => ({
+        data: (stats.byCategory || []).map((item) => ({
           name: item._id || "Unknown",
-          value: item.count || 0
-        }))
+          value: item.count || 0,
+        })),
       };
     } catch (error) {
       console.error("Error fetching category data:", error);
@@ -85,13 +83,13 @@ export const incidentAPI = {
     try {
       const response = await API.get("/incidents/stats/summary");
       const stats = response.data?.data || {};
-      
+
       // Transform to format: [{ name: "Severity Level", value: count }]
       return {
-        data: (stats.bySeverity || []).map(item => ({
+        data: (stats.bySeverity || []).map((item) => ({
           name: `Level ${item._id || 0}`,
-          value: item.count || 0
-        }))
+          value: item.count || 0,
+        })),
       };
     } catch (error) {
       console.error("Error fetching severity data:", error);
@@ -103,14 +101,16 @@ export const incidentAPI = {
     try {
       const response = await API.get("/incidents/stats/summary");
       const stats = response.data?.data;
-      
+
       // Return raw format that TrendLine component expects: { _id: { year, month }, count }
       if (!stats || !stats.byMonth || !Array.isArray(stats.byMonth)) {
         return { data: [] };
       }
-      
+
       return {
-        data: stats.byMonth.filter(item => item && item._id && item._id.year && item._id.month)
+        data: stats.byMonth.filter(
+          (item) => item && item._id && item._id.year && item._id.month,
+        ),
       };
     } catch (error) {
       console.error("Error fetching trend data:", error);
@@ -121,30 +121,30 @@ export const incidentAPI = {
   getUnsafe: async () => {
     try {
       // Get all incidents and group by unsafe_condition_or_behavior
-      const response = await API.get("/incidents", { 
-        params: { limit: 10000 } // Get a large sample
+      const response = await API.get("/incidents", {
+        params: { limit: 10000 }, // Get a large sample
       });
-      
+
       const incidents = response.data?.data || [];
       const unsafeMap = {};
-      
-      incidents.forEach(incident => {
+
+      incidents.forEach((incident) => {
         const type = incident.unsafe_condition_or_behavior || "Unknown";
         unsafeMap[type] = (unsafeMap[type] || 0) + 1;
       });
-      
+
       // Transform to format: [{ name: "Type", value: count }]
       return {
         data: Object.entries(unsafeMap).map(([name, value]) => ({
           name,
-          value
-        }))
+          value,
+        })),
       };
     } catch (error) {
       console.error("Error fetching unsafe data:", error);
       return { data: [] };
     }
-  }
+  },
 };
 
 export default API;
