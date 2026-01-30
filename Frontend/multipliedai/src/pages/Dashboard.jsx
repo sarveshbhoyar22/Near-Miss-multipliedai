@@ -76,26 +76,22 @@ const Dashboard = () => {
           <StatCard 
             title="Total Incidents" 
             value={summary?.total || 0}
-            color="blue"
-            icon="📊"
+            variant="default"
           />
           <StatCard 
             title="High Severity" 
             value={summary?.highSeverity || 0}
-            color="red"
-            icon="⚠️"
+            variant="dark"
           />
           <StatCard 
             title="Top Category" 
             value={summary?.topCategory || "-"}
-            color="green"
-            icon="📁"
+            variant="light"
           />
           <StatCard 
             title="Categories" 
             value={category?.length || 0}
-            color="purple"
-            icon="🏷️"
+            variant="accent"
           />
         </div>
 
@@ -107,7 +103,7 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold text-gray-900 mb-1">Incidents by Category</h2>
               <p className="text-sm text-gray-500">Distribution across different incident categories</p>
             </div>
-            <div className="h-[350px]">
+            <div className="h-[370px]">
               <CategoryChart data={category} />
             </div>
           </div>
@@ -118,7 +114,7 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold text-gray-900 mb-1">Severity Distribution</h2>
               <p className="text-sm text-gray-500">Breakdown of incidents by severity level</p>
             </div>
-            <div className="h-[350px]">
+            <div className="h-[450px]">
               <SeverityChart data={severity} />
             </div>
           </div>

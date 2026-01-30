@@ -1,21 +1,30 @@
-const StatCard = ({ title, value, icon, color = "blue" }) => {
-  const colorClasses = {
-    blue: "bg-blue-50 border-blue-200 text-blue-600",
-    red: "bg-red-50 border-red-200 text-red-600",
-    green: "bg-green-50 border-green-200 text-green-600",
-    purple: "bg-purple-50 border-purple-200 text-purple-600",
-    orange: "bg-orange-50 border-orange-200 text-orange-600",
+const StatCard = ({ title, value, variant = "default" }) => {
+  const variantClasses = {
+    default: "bg-white border-gray-200",
+    dark: "bg-gray-900 border-gray-800 text-white",
+    light: "bg-gray-50 border-gray-300",
+    accent: "bg-black border-black text-white",
   };
 
-  const bgClass = colorClasses[color] || colorClasses.blue;
+  const bgClass = variantClasses[variant] || variantClasses.default;
+  const isDark = variant === "dark" || variant === "accent";
 
   return (
-    <div className={`${bgClass} border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 flex-1 min-w-[200px]`}>
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-medium opacity-80 uppercase tracking-wide">{title}</h3>
-        {icon && <span className="text-2xl">{icon}</span>}
+    <div className={`${bgClass} border rounded-lg p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex-1 min-w-[200px] group relative overflow-hidden`}>
+      {/* Subtle accent line */}
+      <div className={`absolute top-0 left-0 right-0 h-1 ${isDark ? 'bg-white' : 'bg-black'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+      
+      <div className="relative">
+        <h3 className={`text-xs font-semibold uppercase tracking-wider mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+          {title}
+        </h3>
+        <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} leading-tight`}>
+          {value ?? "-"}
+        </h2>
       </div>
-      <h2 className="text-3xl font-bold">{value ?? "-"}</h2>
+      
+      {/* Subtle bottom border on hover */}
+      <div className={`absolute bottom-0 left-0 right-0 h-0.5 ${isDark ? 'bg-white' : 'bg-gray-900'} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`}></div>
     </div>
   );
 };
