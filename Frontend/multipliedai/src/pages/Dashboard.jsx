@@ -26,6 +26,7 @@ const Dashboard = () => {
           incidentAPI.getUnsafe()
         ]);
         setSummary(summaryRes.data);
+      
         setTrend(trendRes.data);
         setCategory(categoryRes.data);
         setSeverity(severityRes.data);

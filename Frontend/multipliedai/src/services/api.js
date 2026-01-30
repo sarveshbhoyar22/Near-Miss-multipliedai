@@ -1,14 +1,16 @@
 import axios from "axios";
-import dotenv from "dotenv";
 
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_URL ,
 });
+// console.log(import.meta.env.REACT_APP_API_URL);
+
 
 // API Service Functions
 export const incidentAPI = {
   // Get all incidents with filters
+
   getAll: (params = {}) => {
     return API.get("/incidents", { params });
   },
